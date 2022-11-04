@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Api SandBox</title>
+</head>
+
+<body>
+    <btn id="getText">Get Text</btn>
+    <button id="getUsers">Get JSON</button>
+    <button id="getPosts">Get API Data</button>
+    <hr>
+    <div id="output"></div>
+    <form id="addPost">
+        <div>
+            <input type="text" id="title" placeholder="Title">
+        </div>
+        <div>
+            <textarea id="body" placeholder="Body"></textarea>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById('getText').addEventListener('click', getText);
+        document.getElementById('getUsers').addEventListener('click', getUsers);
+        document.getElementById('getPosts').addEventListener('click', getPosts);
+        document.getElementById('addPost').addEventListener('submit', addPost);
+
+
+        function getText() {
+            // fetch('sample.txt')
+            // .then(function(res){
+            //   return  res.text();
+            // })
+            // .then(function(data){
+            //     console.log(data);
+            // });
+
+
+            // Nakon .then ocekuje funkciju(zbog toga ide function(res))
+            fetch('sample.txt')
+                .then((res) => res.text())
+                .then((data) => {
+                    document.getElementById('output').innerHTML = data;
+                })
+                .catch((err) => console.log(err))
+        }
+
+        function getUsers() {
+            fetch('users.json')
+                .then((res) => res.json())
+                .then((data) => {
+                    let output = '<h2>Users</h2>';
+                    data.forEach(function (user) {
+                        // User je parametar, prolazi kroz arrey objekata.Moze da pise bilo sta, ide od jednog OBJEKAT do drugog
+                        output += `
+                            <ul>
+                                <li>ID:${user.id}</li>
+                                <li>ID:${user.name}</li>
+                                <li>ID:${user.email}</li>
+                            </ul>
+                        `;
+                    });
+                    document.getElementById('output').innerHTML = output;
+                })
+        }
+
+        function sum(a, b) {
+            return a + b;
+        }
+
+        const sum2 = (a, b) => {
+            return a + b;
+        }
+
+        const sun3 = (a, b) => a + b;
+
+        function netoworkCall1() {
+            fetch('example-api.com')
+                .then((res) => res.json())
+                .then((data) => console.log(data))
+                .catch('OBRADA GRESAKA');
+        }
+
+        let data;
+        let error;
+        let isLoading = true;
+
+        // if (isLoading) return (loading spinner html)
+        // if(error) return (error message html)
+        // return (html koji obradjuje podatke)
+   
+        async function netoworkCall2() {
+            try {
+                const res = await fetch('example-api.com');
+                data = await res.json()
+                // obrada podataka
+                console.log(data);
+            } catch (error) {
+                // obrada gresaka
+                console.error(error);
+            } 
+        }
+
+        function getPosts() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then((res) => res.json())
+                .then((data) => {
+                    let output = '<h2>Posts</h2>'
+
+                    data.forEach(function (post) {
+                        output += `
+            <div>
+                <h3>${post.title}</h3>
+                <p>${post.body}</p>
+            </div>
+            `;
+                    });
+                    document.getElementById('output').innerHTML = output;
+                })
+        }
+
+
+        function addPost(e) {
+            e.preventDefault();
+
+            let title = document.getElementById('title').value;
+            let body = document.getElementById('body').value;
+           
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ title, body: body })
+            })
+                .then((res) => res.json())
+                .then((data) => console.log(data));
+        }
+    </script>
+</body>
+
+</html>
